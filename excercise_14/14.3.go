@@ -12,13 +12,15 @@ func main() {
 		ch <- "Привет"
 		ch <- "буферизованный канал!"
 	}()
-
-	for i := 0; i < cap(ch); {
+OUT:
+	for {
 		select {
 		case res := <-ch:
 			fmt.Println(res)
+			if len(ch) == 0 {
+				break OUT
+			}
 		default:
-			i++
 			time.Sleep(time.Second)
 		}
 	}
