@@ -9,6 +9,7 @@ func main() {
 		<-ch
 		stop <- struct{}{}
 	}()
+
 	close(ch) //закрываем канал для избежания блокировки
 	<-stop
 	fmt.Println("happy end")
