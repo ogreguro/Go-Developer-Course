@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"time"
 )
 
 func main() {
@@ -20,8 +19,6 @@ OUT:
 			if len(ch) == 0 {
 				break OUT
 			}
-		default:
-			time.Sleep(time.Second)
 		}
 	}
 }
