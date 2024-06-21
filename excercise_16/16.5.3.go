@@ -6,34 +6,30 @@ import (
 	"time"
 )
 
-//доп. вариант
-//закрытие канала избавляет от лишних горутин, пишущих значения в каналы в управляющей горутине
-//вместо проверки на наличие значения в канале в рабочих горутинах осуществляется проверка на открытость - попытка чтения из него
+//доп вариант с использованием потокобезопасного доступа к переменной через мутексы
 
 func main() {
 	var wg sync.WaitGroup
-	const rc int = 10
-
-	var channels [rc]chan struct{}
+	var mu sync.RWMutex
+	rc := 10
+	stop := false
 
 	for i := 0; i < rc; i++ {
 		wg.Add(1)
-		channels[i] = make(chan struct{})
-		go func(i int, ch chan struct{}) {
+		go func(id int) {
 			defer wg.Done()
-		OUT:
 			for {
-				select{
-				case 0==0:
-				fmt.Printf("сложные вычисления горутины: %d\n", i+1)
-				case _, ok := <-ch:
-				if !ok {
-					fmt.Printf("stop горутина: %d\n", i+1)
-					break OUT
-				}
 				time.Sleep(1 * time.Second)
+				fmt.Printf("сложные вычисления горутины: %d\n", id+1)
+				mu.RLock()
+				if stop {
+					mu.RUnlock()
+					fmt.Printf("stop горутина: %d\n", id+1)
+					return
+				}
+				mu.RUnlock()
 			}
-		}(i, channels[i])
+		}(i)
 	}
 
 	wg.Add(1)
@@ -41,9 +37,11 @@ func main() {
 		defer wg.Done()
 		time.Sleep(3 * time.Second)
 		fmt.Println("ой, всё!")
-		for _, ch := range channels {
-			close(ch)
-		}
+
+		mu.Lock()
+		stop = true
+		mu.Unlock()
 	}()
+
 	wg.Wait()
 }
