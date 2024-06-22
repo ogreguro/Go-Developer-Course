@@ -14,7 +14,8 @@ func main() {
 	l := log.New(os.Stdout, "", 0)
 	logHandler := logMiddleware(l)
 	httpServer := &http.Server{
-		Addr:    ":8080",
+		Addr: ":8080",
+		//обратный порядок вызова обработчика для того, чтобы логирование происходило до проверки аутентификации
 		Handler: logHandler(authHandler(mux)),
 	}
 
@@ -36,7 +37,7 @@ func authHandler(h http.Handler) http.Handler {
 		if xId != "my_secret" {
 			errorMsg := "пользователь не авторизован"
 			http.Error(w, errorMsg, http.StatusUnauthorized)
-			log.Println("error: %s", errorMsg)
+			log.Println("error:", errorMsg)
 			return
 		}
 		h.ServeHTTP(w, r)
@@ -46,7 +47,8 @@ func authHandler(h http.Handler) http.Handler {
 func logMiddleware(l *log.Logger) func(h http.Handler) http.Handler {
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			l.Println("url: %s", r.URL)
+			//неиспользуемый логгер l теперь используется вместо log
+			l.Println("url:", r.URL)
 			h.ServeHTTP(w, r)
 		})
 	}

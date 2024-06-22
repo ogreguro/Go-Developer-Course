@@ -11,13 +11,16 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/hello", hello2)
 
+	//проверка и создание файла лога
 	file, err := os.OpenFile("excercise_17/http-service.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatal("Failed to open log file:", err)
 	}
+	//log перенаправлен в файл
 	log.SetOutput(file)
-
+	
 	l := log.New(os.Stdout, "", log.LstdFlags)
+	//кастомный логгер перенаправлен в тот же файл
 	l.SetOutput(file)
 
 	logHandler := logMiddleware2(l)
