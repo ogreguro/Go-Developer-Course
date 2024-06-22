@@ -18,9 +18,9 @@ func main() {
 	}
 	//log перенаправлен в файл
 	log.SetOutput(file)
-	
+
 	l := log.New(os.Stdout, "", log.LstdFlags)
-	//кастомный логгер перенаправлен в тот же файл
+	//отдельный логгер l перенаправлен в тот же файл
 	l.SetOutput(file)
 
 	logHandler := logMiddleware2(l)
