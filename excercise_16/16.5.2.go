@@ -14,12 +14,12 @@ func main() {
 	var wg sync.WaitGroup
 	const rc int = 10
 
-	var channels [rc]chan struct{}
+	var channels [rc]chan int
 
 	for i := 0; i < rc; i++ {
 		wg.Add(1)
-		channels[i] = make(chan struct{})
-		go func(i int, ch chan struct{}) {
+		channels[i] = make(chan int)
+		go func(i int, ch chan int) {
 			defer wg.Done()
 		OUT:
 			for {

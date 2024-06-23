@@ -17,10 +17,10 @@ func main() {
 	for i := 0; i < rc; i++ {
 		wg.Add(1)
 		go func(id int) {
-			defer wg.Done()
 			for {
-				time.Sleep(1 * time.Second)
 				fmt.Printf("сложные вычисления горутины: %d\n", id+1)
+				time.Sleep(1 * time.Second)
+
 				mu.RLock()
 				if stop {
 					mu.RUnlock()
