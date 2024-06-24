@@ -1,9 +1,11 @@
 package main
 
 import (
-	"github.com/ogreguro/mod_10"
+	v1 "github.com/ogreguro/mod_10"
+	v11 "github.com/ogreguro/mod_10/v2"
 )
 
 func main() {
-	mod_10.Hello()
+	v1.Hello()
+	v11.Hello()
 }
